@@ -43,6 +43,7 @@ import { AudioStreamer } from "../lib/audio-streamer";
 import { audioContext } from "../lib/utils";
 import VolMeterWorket from "../lib/worklets/vol-meter";
 import { StreamingLog } from "../multimodal-live-types";
+import { getStoredResponses } from "../lib/response-store";
 
 export type UseLiveAPIResults = {
   client: MultimodalLiveClient;
@@ -107,6 +108,35 @@ export function useLiveAPI({
     const onReconnectSuccess = () => {
       setReconnecting(false);
       setConnected(true);
+      
+      try {
+        // Get the most recent non-"Person 1" name from stored responses
+        const responses = getStoredResponses();
+        let intervieweeName = "Person 1";
+        
+        // Find the most recent response with a name that isn't "Person 1"
+        for (let i = 0; i < responses.length; i++) {
+          if (responses[i].person && 
+              responses[i].person.toLowerCase() !== "person 1".toLowerCase()) {
+            intervieweeName = responses[i].person;
+            break;
+          }
+        }
+        
+        // Send context message to the API
+        const contextMessage = `We are interviewing ${intervieweeName}. Please make sure to update your context accordingly with your responses`;
+        console.log("Sending reconnection context message:", contextMessage);
+        
+        // Send the context message as a user message
+        try {
+          client.send([{ text: contextMessage }]);
+          console.log("Successfully sent reconnection context message");
+        } catch (error: unknown) {
+          console.error("Error sending reconnection context message:", error);
+        }
+      } catch (error: unknown) {
+        console.error("Error processing reconnection context:", error);
+      }
     };
 
     // Add custom event listeners for reconnection events
