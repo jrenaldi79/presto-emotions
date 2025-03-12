@@ -14,12 +14,30 @@
  * limitations under the License.
  */
 
+/**
+ * App - Main Application Component
+ * 
+ * @description Root component of the Gemini Web Console application that orchestrates the
+ * overall layout and provides the LiveAPI context to all child components.
+ * 
+ * @functionality
+ * - Sets up the LiveAPIProvider with API key and configuration
+ * - Manages the main application layout with video display and control panels
+ * - Coordinates the interaction between different components
+ * - Handles responsive layout adjustments
+ * 
+ * @dataFlow Provides the LiveAPI context to all child components
+ * @configuration Initializes the application with API key from environment variables
+ * @layout Manages the main application layout with responsive design
+ */
+
 import { useRef, useState } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
+import TextResponsePanel from "./components/text-response-panel/TextResponsePanel";
 import cn from "classnames";
 
 const API_KEY = process.env.REACT_APP_GEMINI_API_KEY as string;
@@ -45,15 +63,17 @@ function App() {
           <main>
             <div className="main-app-area">
               {/* APP goes here */}
-              <Altair />
-              <video
-                className={cn("stream", {
-                  hidden: !videoRef.current || !videoStream,
-                })}
-                ref={videoRef}
-                autoPlay
-                playsInline
-              />
+              <div className="video-container">
+                <video
+                  className={cn("stream", {
+                    hidden: !videoRef.current || !videoStream,
+                  })}
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                />
+              </div>
+              <TextResponsePanel />
             </div>
 
             <ControlTray

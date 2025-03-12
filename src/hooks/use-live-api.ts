@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
+/**
+ * useLiveAPI Hook - Gemini Live API Connection Management
+ * 
+ * @description Custom React hook that manages the connection to the Gemini Live API.
+ * Handles connection state, reconnection logic, and audio streaming functionality.
+ * 
+ * @functionality
+ * - Creates and manages a MultimodalLiveClient instance
+ * - Tracks connection state (connected, reconnecting)
+ * - Handles automatic reconnection when the connection is interrupted with errors
+ * - Manages audio streaming for input and output
+ * - Provides volume metering for audio visualization
+ * 
+ * @dataFlow Bridges between React components and the MultimodalLiveClient
+ * @errorHandling Detects connection errors and manages reconnection attempts
+ * @cleanup Properly cleans up resources when unmounting
+ * @reconnection Automatically attempts to reconnect with exponential backoff
+ */
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MultimodalLiveAPIClientConnection,
@@ -23,12 +42,14 @@ import { LiveConfig } from "../multimodal-live-types";
 import { AudioStreamer } from "../lib/audio-streamer";
 import { audioContext } from "../lib/utils";
 import VolMeterWorket from "../lib/worklets/vol-meter";
+import { StreamingLog } from "../multimodal-live-types";
 
 export type UseLiveAPIResults = {
   client: MultimodalLiveClient;
   setConfig: (config: LiveConfig) => void;
   config: LiveConfig;
   connected: boolean;
+  reconnecting: boolean;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   volume: number;
@@ -45,6 +66,7 @@ export function useLiveAPI({
   const audioStreamerRef = useRef<AudioStreamer | null>(null);
 
   const [connected, setConnected] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const [config, setConfig] = useState<LiveConfig>({
     model: "models/gemini-2.0-flash-exp",
   });
@@ -75,6 +97,29 @@ export function useLiveAPI({
 
     const onAudio = (data: ArrayBuffer) =>
       audioStreamerRef.current?.addPCM16(new Uint8Array(data));
+      
+    // Track reconnection attempts
+    const onReconnectAttempt = () => {
+      setReconnecting(true);
+    };
+    
+    // Track successful reconnection
+    const onReconnectSuccess = () => {
+      setReconnecting(false);
+      setConnected(true);
+    };
+
+    // Add custom event listeners for reconnection events
+    client.on("client.reconnect", (log: StreamingLog) => {
+      const message = typeof log.message === 'string' ? log.message : JSON.stringify(log.message);
+      
+      if (message === "Reconnection successful") {
+        onReconnectSuccess();
+      } else if (message.includes("Attempting to reconnect") || 
+                message.includes("Reconnecting...")) {
+        onReconnectAttempt();
+      }
+    });
 
     client
       .on("close", onClose)
@@ -86,6 +131,9 @@ export function useLiveAPI({
         .off("close", onClose)
         .off("interrupted", stopAudioStreamer)
         .off("audio", onAudio);
+      
+      // Remove the log event listener
+      client.off("log");
     };
   }, [client]);
 
@@ -109,6 +157,7 @@ export function useLiveAPI({
     config,
     setConfig,
     connected,
+    reconnecting,
     connect,
     disconnect,
     volume,

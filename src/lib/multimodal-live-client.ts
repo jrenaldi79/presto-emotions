@@ -14,6 +14,26 @@
  * limitations under the License.
  */
 
+/**
+ * MultimodalLiveClient - Gemini Live API WebSocket Client
+ * 
+ * @description Core client for connecting to the Gemini Live API via WebSocket.
+ * Manages the WebSocket connection, handles message processing, and provides
+ * automatic reconnection with exponential backoff when errors occur.
+ * 
+ * @functionality
+ * - Establishes and manages WebSocket connection to Gemini Live API
+ * - Processes incoming and outgoing messages in the proper format
+ * - Handles tool calls and responses from the model
+ * - Implements automatic reconnection with exponential backoff strategy
+ * - Emits events for connection state changes and message processing
+ * 
+ * @dataFlow Handles bidirectional communication with the Gemini Live API
+ * @errorHandling Detects connection errors and manages reconnection attempts
+ * @reconnection Implements exponential backoff for reconnection attempts
+ * @events Emits events for connection state changes and message processing
+ */
+
 import { Content, GenerativeContentBlob, Part } from "@google/generative-ai";
 import { EventEmitter } from "eventemitter3";
 import { difference } from "lodash";
@@ -53,6 +73,7 @@ interface MultimodalLiveClientEventTypes {
   turncomplete: () => void;
   toolcall: (toolCall: ToolCall) => void;
   toolcallcancellation: (toolcallCancellation: ToolCallCancellation) => void;
+  "client.reconnect": (log: StreamingLog) => void;
 }
 
 export type MultimodalLiveAPIClientConnection = {
@@ -69,6 +90,12 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
   public ws: WebSocket | null = null;
   protected config: LiveConfig | null = null;
   public url: string = "";
+  private reconnecting: boolean = false;
+  private maxReconnectAttempts: number = 5;
+  private reconnectAttempt: number = 0;
+  private reconnectDelay: number = 1000; // Start with 1 second delay
+  private reconnectTimeoutId: number | null = null;
+  
   public getConfig() {
     return { ...this.config };
   }
@@ -90,6 +117,11 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
       message,
     };
     this.emit("log", log);
+    
+    // Also emit client.reconnect events for reconnection-related logs
+    if (type === "client.reconnect") {
+      this.emit("client.reconnect", log);
+    }
   }
 
   connect(config: LiveConfig): Promise<boolean> {
@@ -131,7 +163,10 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
         ws.removeEventListener("error", onError);
         ws.addEventListener("close", (ev: CloseEvent) => {
           console.log(ev);
-          this.disconnect(ws);
+          
+          // Don't disconnect if we're going to reconnect
+          let shouldReconnect = false;
+          
           let reason = ev.reason || "";
           if (reason.toLowerCase().includes("error")) {
             const prelude = "ERROR]";
@@ -142,19 +177,100 @@ export class MultimodalLiveClient extends EventEmitter<MultimodalLiveClientEvent
                 Infinity,
               );
             }
+            // Attempt to reconnect on error
+            shouldReconnect = true;
           }
+          
           this.log(
             `server.${ev.type}`,
             `disconnected ${reason ? `with reason: ${reason}` : ``}`,
           );
-          this.emit("close", ev);
+          
+          // If we should reconnect and we have a valid config
+          if (shouldReconnect && this.config && !this.reconnecting) {
+            this.attemptReconnect(ws);
+          } else {
+            // Otherwise just disconnect normally
+            this.disconnect(ws);
+            this.emit("close", ev);
+          }
         });
         resolve(true);
       });
     });
   }
 
+  /**
+   * Attempts to reconnect to the server with exponential backoff
+   * @param oldWs The WebSocket that was disconnected
+   */
+  private attemptReconnect(oldWs: WebSocket) {
+    // Mark that we're in the process of reconnecting
+    this.reconnecting = true;
+    
+    // Increment the reconnect attempt counter
+    this.reconnectAttempt++;
+    
+    // Calculate delay with exponential backoff (1s, 2s, 4s, 8s, 16s)
+    const delay = Math.min(30000, this.reconnectDelay * Math.pow(2, this.reconnectAttempt - 1));
+    
+    this.log("client.reconnect", `Attempting to reconnect (attempt ${this.reconnectAttempt}/${this.maxReconnectAttempts}) in ${delay}ms`);
+    
+    // Close the old WebSocket if it's still open
+    if (oldWs && oldWs.readyState !== WebSocket.CLOSED) {
+      oldWs.close();
+    }
+    
+    // Clear any existing WebSocket reference
+    this.ws = null;
+    
+    // Schedule the reconnection attempt
+    this.reconnectTimeoutId = window.setTimeout(() => {
+      // If we've exceeded the maximum number of attempts, give up
+      if (this.reconnectAttempt > this.maxReconnectAttempts) {
+        this.log("client.reconnect", `Failed to reconnect after ${this.maxReconnectAttempts} attempts`);
+        this.reconnecting = false;
+        this.reconnectAttempt = 0;
+        this.emit("close", new CloseEvent("close", { reason: "Max reconnect attempts exceeded" }));
+        return;
+      }
+      
+      // Attempt to reconnect
+      this.log("client.reconnect", `Reconnecting... (attempt ${this.reconnectAttempt}/${this.maxReconnectAttempts})`);
+      
+      // Use the stored config to reconnect
+      if (this.config) {
+        this.connect(this.config)
+          .then(() => {
+            this.log("client.reconnect", "Reconnection successful");
+            this.reconnecting = false;
+            this.reconnectAttempt = 0;
+          })
+          .catch((error) => {
+            this.log("client.reconnect", `Reconnection failed: ${error.message}`);
+            // Try again with the next backoff delay
+            this.attemptReconnect(oldWs);
+          });
+      } else {
+        this.log("client.reconnect", "Cannot reconnect: No config available");
+        this.reconnecting = false;
+        this.reconnectAttempt = 0;
+        this.emit("close", new CloseEvent("close", { reason: "No config available for reconnection" }));
+      }
+    }, delay);
+  }
+  
   disconnect(ws?: WebSocket) {
+    // Clear any pending reconnect attempts
+    if (this.reconnectTimeoutId !== null) {
+      window.clearTimeout(this.reconnectTimeoutId);
+      this.reconnectTimeoutId = null;
+    }
+    
+    // Reset reconnection state
+    this.reconnecting = false;
+    this.reconnectAttempt = 0;
+    
     // could be that this is an old websocket and theres already a new instance
     // only close it if its still the correct reference
     if ((!ws || this.ws === ws) && this.ws) {

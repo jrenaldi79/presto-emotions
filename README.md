@@ -1,10 +1,19 @@
-# Multimodal Live API - Web console
+# Presto Emotions - Emotion Detection & Analysis Console
 
-This repository contains a react-based starter app for using the [Multimodal Live API](<[https://ai.google.dev/gemini-api](https://ai.google.dev/api/multimodal-live)>) over a websocket. It provides modules for streaming audio playback, recording user media such as from a microphone, webcam or screen capture as well as a unified log view to aid in development of your application.
+Presto Emotions is a specialized React application for real-time emotion detection and analysis using the [Multimodal Live API](https://ai.google.dev/api/multimodal-live) over a websocket. Originally based on Google's Multimodal Live API web console, this application has been transformed into a comprehensive emotion detection and visualization system that processes video/audio streams and extracts emotion data using Gemini's multimodal capabilities.
 
 [![Multimodal Live API Demo](readme/thumbnail.png)](https://www.youtube.com/watch?v=J_q7JY1XxFE)
 
-Watch the demo of the Multimodal Live API [here](https://www.youtube.com/watch?v=J_q7JY1XxFE).
+Watch the demo of the original Multimodal Live API [here](https://www.youtube.com/watch?v=J_q7JY1XxFE).
+
+## Key Features
+
+- **Real-time Emotion Detection**: Analyzes video and audio streams to detect emotions with confidence scores
+- **Comprehensive Emotion Dashboard**: Visualizes detected emotions with charts, graphs, and filtering capabilities
+- **Advanced Media Processing**: Enhanced webcam and audio recording with volume metering and visualization
+- **Structured Data Management**: Stores and retrieves emotion data with timestamps and contextual quotes
+- **Professional UI**: User-friendly interface with reconnection status indicators and emotion-specific Lucide icons
+- **Visual Consistency**: Color-coded emotion categories for improved readability and intuitive understanding
 
 ## Usage
 
@@ -14,11 +23,80 @@ To get started, [create a free Gemini API key](https://aistudio.google.com/apike
 $ npm install && npm start
 ```
 
-We have provided several example applications on other branches of this repository:
+## Project Modifications
 
-- [demos/GenExplainer](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genexplainer)
-- [demos/GenWeather](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genweather)
-- [demos/GenList](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genlist)
+This project has been significantly modified from the original Gemini Multimodal Live API web console:
+
+1. **Emotion Detection System**:
+   - Repurposed the Altair component to detect emotions from video/audio streams
+   - Added specialized system instructions for non-verbal cue analysis
+   - Implemented JSON response parsing for structured emotion data extraction
+
+2. **Emotion Visualization Dashboard**:
+   - Created a comprehensive emotion visualization system in TextResponsePanel
+   - Added charts and graphs using Recharts for data visualization
+   - Implemented filtering, sorting, and data management capabilities
+
+3. **Enhanced Media Handling**:
+   - Improved webcam hook with better documentation and error handling
+   - Enhanced audio recording with advanced processing capabilities
+   - Added support for volume metering and audio visualization
+
+4. **UI Improvements**:
+   - Added reconnection status indicators for API connection monitoring
+   - Implemented a more user-friendly console interface
+   - Enhanced emotion visualization with professional Lucide icons
+   - Color-coded emotion categories for improved visual distinction
+
+5. **Data Management**:
+   - Created a response store system for emotion data persistence
+   - Implemented timestamp tracking for emotion responses
+   - Added support for both single emotion objects and arrays
+
+6. **Lucide Icon Integration**:
+   - Replaced emoji representations with professional Lucide React icons
+   - Implemented emotion-specific icons for various emotional states
+   - Created a consistent visual language with color-coded emotion categories
+   - Enhanced user experience with visually distinct emotion representations
+
+
+## Project Structure
+
+```
+.
+├── docs/                       # Project documentation
+│   └── structure.md            # This file - project structure documentation
+├── public/                     # Static assets served directly by the web server
+│   ├── favicon.ico             # Application favicon
+│   ├── index.html              # HTML entry point
+│   └── robots.txt              # Robots crawling instructions
+├── readme/                     # README assets
+│   └── thumbnail.png           # Thumbnail image for README
+├── src/                        # Source code
+│   ├── components/             # React components organized by feature
+│   │   ├── altair/             # Emotion detection visualization component
+│   │   ├── audio-pulse/        # Audio visualization components
+│   │   ├── control-tray/       # User control interface components
+│   │   ├── icons/              # Icon components and utilities
+│   │   ├── logger/             # Logging and debug components
+│   │   ├── side-panel/         # Side panel UI components
+│   │   └── text-response-panel/ # Emotion visualization dashboard
+│   ├── contexts/               # React context providers
+│   ├── hooks/                  # Custom React hooks
+│   └── lib/                    # Core libraries and utilities
+├── .env                        # Environment variables
+├── README.md                   # Project documentation
+└── package.json                # NPM package configuration
+```
+
+### Key Directories
+
+- **/src/components**: React components organized by feature, including the emotion visualization dashboard and control interfaces
+- **/src/contexts**: React context providers for state management across the application
+- **/src/hooks**: Custom React hooks for media handling, API integration, and more
+- **/src/lib**: Core libraries, utilities, and services used throughout the application
+
+For a complete and detailed project structure, refer to [docs/structure.md](docs/structure.md).
 
 ## Example
 
@@ -92,14 +170,6 @@ export function Altair() {
 }
 ```
 
-## development
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-Project consists of:
-
-- an Event-emitting websocket-client to ease communication between the websocket and the front-end
-- communication layer for processing audio in and out
-- a boilerplate view for starting to build your apps and view logs
 
 ## Available Scripts
 

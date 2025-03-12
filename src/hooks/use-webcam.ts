@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 
+/**
+ * useWebcam Hook - Webcam Stream Management
+ * 
+ * @description Custom React hook that manages webcam video streams.
+ * Handles requesting user permission, starting/stopping the stream, and cleanup.
+ * 
+ * @functionality
+ * - Requests user permission to access the webcam
+ * - Manages the webcam MediaStream lifecycle
+ * - Tracks streaming state for UI updates
+ * - Automatically cleans up resources when component unmounts
+ * - Handles stream ended events
+ * 
+ * @dataFlow Provides webcam stream to components for display and processing
+ * @permissions Requires user permission to access camera
+ * @cleanup Properly releases camera resources when stopped or unmounted
+ */
+
 import { useState, useEffect } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
 

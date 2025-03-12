@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
+/**
+ * Media Stream Mux - Media Stream Type Definitions
+ * 
+ * @description Type definitions for media stream handling in the application.
+ * Provides a common interface for different types of media streams (webcam, screen).
+ * 
+ * @functionality
+ * - Defines the UseMediaStreamResult interface for consistent media stream handling
+ * - Supports both webcam and screen capture streams
+ * - Tracks streaming state and provides methods for starting/stopping streams
+ * - Includes system audio detection for screen capture streams
+ * 
+ * @dataFlow Used by media stream hooks to provide a consistent interface
+ * @typeDefinitions Provides type safety for media stream operations
+ */
+
 export type UseMediaStreamResult = {
   type: "webcam" | "screen";
   start: () => Promise<MediaStream>;
   stop: () => void;
   isStreaming: boolean;
   stream: MediaStream | null;
+  hasSystemAudio?: boolean; // Optional for backward compatibility
 };

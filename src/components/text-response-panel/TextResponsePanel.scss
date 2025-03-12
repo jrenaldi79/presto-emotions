@@ -1,0 +1,405 @@
+// Modal styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--Neutral-10);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 400px;
+  max-width: 90%;
+  overflow: hidden;
+  animation: modal-appear 0.2s ease-out;
+}
+
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-stroke);
+  
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-200);
+  }
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: var(--Neutral-20);
+  }
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  
+  .modal-icon {
+    margin-right: 16px;
+    color: #e74c3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--gray-200);
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-stroke);
+  gap: 12px;
+}
+
+.modal-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &.cancel {
+    background-color: transparent;
+    border: 1px solid var(--border-stroke);
+    color: var(--gray-200);
+    
+    &:hover {
+      background-color: var(--Neutral-20);
+    }
+  }
+  
+  &.confirm {
+    background-color: #e74c3c;
+    border: 1px solid #e74c3c;
+    color: white;
+    
+    &:hover {
+      background-color: #c0392b;
+      border-color: #c0392b;
+    }
+  }
+}
+
+.text-response-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--Neutral-10);
+  border-left: 1px solid var(--border-stroke);
+  height: 100%;
+  width: 400px;
+  padding: 0;
+  color: var(--gray-200);
+  font-family: var(--font-family);
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  font-size: 13px; // Reduced base font size
+
+  .panel-section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &.tool-section {
+      border-bottom: 1px solid var(--border-stroke);
+      transition: height 0.3s ease;
+      
+      &.expanded {
+        height: 30%;
+      }
+      
+      &.minimized {
+        height: 40px; /* Just enough to show the header */
+        
+        .section-content {
+          display: none;
+        }
+      }
+    }
+    
+    &.emotion-section {
+      border-bottom: 1px solid var(--border-stroke);
+      flex: 1;
+      transition: flex 0.3s ease;
+    }
+
+    &.emotion-analysis-section {
+      flex: 1;
+      transition: flex 0.3s ease;
+    }
+  }
+
+  .section-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-stroke);
+    background-color: var(--Neutral-15);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--gray-200);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .response-count, .high-confidence-note {
+      font-size: 0.7rem; // Reduced from 0.75rem
+      color: var(--gray-100);
+      background: var(--Neutral-20);
+      padding: 0.125rem 0.5rem;
+      border-radius: 0.75rem;
+    }
+    
+    .clear-data-button,
+    .toggle-section-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--gray-100);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      transition: all 0.2s ease;
+      
+      svg {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+    
+    .clear-data-button:hover {
+      color: var(--Red-500);
+      background-color: var(--Neutral-20);
+    }
+    
+    .toggle-section-button:hover {
+      color: var(--Blue-500);
+      background-color: var(--Neutral-20);
+    }
+  }
+
+  .section-content {
+    flex: 1;
+    padding: 0.75rem 0.875rem; // Reduced vertical padding
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; // Reduced from 0.875rem
+    overflow-y: auto;
+  }
+
+  .altair-container {
+    background-color: var(--Neutral-15);
+    border-radius: 8px;
+    padding: 1rem;
+    width: 100%;
+    overflow: hidden;
+    flex: 1;
+    
+    /* Fix for Vega-Embed visualizations */
+    .vega-embed {
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    /* Target the actual visualization container */
+    .vega-embed .marks {
+      max-width: 100%;
+    }
+    
+    /* Ensure all SVG elements are constrained */
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  .text-response-item {
+    background-color: var(--Neutral-15);
+    border-radius: 8px;
+    padding: 1rem;
+    
+    p {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    &.current {
+      border-left: 3px solid var(--Blue-500);
+    }
+  }
+  
+  .emotion-response-item {
+    background-color: var(--Neutral-15);
+    border-radius: 8px;
+    padding: 0.875rem; // Reduced from 1rem
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: var(--Neutral-20);
+    }
+    
+    .emotion-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      
+      .emotion-icon {
+        font-size: 1.125rem; // Reduced from 1.25rem
+        margin-right: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        // Styling for Lucide icons
+        .emotion-lucide-icon {
+          color: var(--gray-200);
+          
+          // Specific emotion color styling
+          &.happy, &.content, &.satisfied, &.nostalgic, &.shy {
+            color: var(--Green-500);
+          }
+          
+          &.sad, &.gloomy, &.dejected, &.melancholy, &.pessimistic {
+            color: var(--Blue-400);
+          }
+          
+          &.angry, &.hostile, &.irritable, &.annoyed, &.resentful, &.jealous {
+            color: var(--Red-500);
+          }
+          
+          &.fearful, &.anxious, &.horrified, &.timid, &.guilty, &.desperate, &.heartcrack {
+            color: var(--Purple-400);
+          }
+          
+          &.enthusiastic, &.excited, &.excitable, &.eager, &.surprised, &.amazed {
+            color: var(--Yellow-500);
+          }
+          
+          &.thoughtful, &.reflective, &.curious, &.speculative {
+            color: var(--Teal-500);
+          }
+          
+          &.amused, &.playful, &.joking, &.thrilled, &.elated {
+            color: var(--Orange-500);
+          }
+        }
+      }
+      
+      .emotion-type {
+        font-weight: 500;
+        text-transform: capitalize;
+        margin-right: 0.5rem;
+        color: var(--gray-200);
+      }
+      
+      .emotion-confidence {
+        font-size: 0.7rem; // Reduced from 0.75rem
+        color: var(--gray-100);
+        background: var(--Neutral-20);
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.625rem;
+        margin-left: auto;
+      }
+    }
+    
+    .emotion-details {
+      padding-left: 1.625rem;
+      
+      .emotion-person {
+        font-size: 0.8125rem; // Reduced from 0.875rem
+        margin-bottom: 0.25rem;
+        color: var(--gray-200);
+        
+        .timestamp {
+          color: var(--gray-100);
+          margin-left: 0.25rem;
+        }
+      }
+      
+      .emotion-quote {
+        font-size: 0.8125rem; // Reduced from 0.875rem
+        font-style: italic;
+        color: var(--gray-200);
+        background: var(--Neutral-20);
+        padding: 0.4375rem 0.625rem; // Reduced from 0.5rem 0.75rem
+        border-radius: 0.375rem;
+        border-left: 3px solid var(--Blue-500);
+        margin-top: 0.4375rem; // Reduced from 0.5rem
+        
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: var(--gray-100);
+    font-style: italic;
+    font-size: 12px; // Added smaller font size
+  }
+}

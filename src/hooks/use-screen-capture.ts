@@ -17,9 +17,10 @@
 import { useState, useEffect } from "react";
 import { UseMediaStreamResult } from "./use-media-stream-mux";
 
-export function useScreenCapture(): UseMediaStreamResult {
+export function useScreenCapture(): UseMediaStreamResult & { hasSystemAudio: boolean } {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [hasSystemAudio, setHasSystemAudio] = useState(false);
 
   useEffect(() => {
     const handleStreamEnded = () => {
@@ -45,8 +46,14 @@ export function useScreenCapture(): UseMediaStreamResult {
     // controller.setFocusBehavior("no-focus-change");
     const mediaStream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
+      audio: true, // Request system audio
       // controller
     });
+    
+    // Check if we got system audio
+    const hasAudio = mediaStream.getAudioTracks().length > 0;
+    setHasSystemAudio(hasAudio);
+    
     setStream(mediaStream);
     setIsStreaming(true);
     return mediaStream;
@@ -57,15 +64,17 @@ export function useScreenCapture(): UseMediaStreamResult {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
       setIsStreaming(false);
+      setHasSystemAudio(false);
     }
   };
 
-  const result: UseMediaStreamResult = {
+  const result: UseMediaStreamResult & { hasSystemAudio: boolean } = {
     type: "screen",
     start,
     stop,
     isStreaming,
     stream,
+    hasSystemAudio,
   };
 
   return result;

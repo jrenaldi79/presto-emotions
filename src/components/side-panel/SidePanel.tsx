@@ -16,11 +16,11 @@
 
 import cn from "classnames";
 import { useEffect, useRef, useState } from "react";
-import { RiSidebarFoldLine, RiSidebarUnfoldLine } from "react-icons/ri";
 import Select from "react-select";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { useLoggerStore } from "../../lib/store-logger";
 import Logger, { LoggerFilterType } from "../logger/Logger";
+import { IconPanelLeftClose, IconPanelLeftOpen, IconSend } from "../icons/LucideIcons";
 import "./side-panel.scss";
 
 const filterOptions = [
@@ -78,11 +78,11 @@ export default function SidePanel() {
         <h2>Console</h2>
         {open ? (
           <button className="opener" onClick={() => setOpen(false)}>
-            <RiSidebarFoldLine color="#b4b8bb" />
+            <IconPanelLeftClose size={20} color="#b4b8bb" />
           </button>
         ) : (
           <button className="opener" onClick={() => setOpen(true)}>
-            <RiSidebarUnfoldLine color="#b4b8bb" />
+            <IconPanelLeftOpen size={20} color="#b4b8bb" />
           </button>
         )}
       </header>
@@ -149,10 +149,10 @@ export default function SidePanel() {
           </span>
 
           <button
-            className="send-button material-symbols-outlined filled"
+            className="send-button"
             onClick={handleSubmit}
           >
-            send
+            <IconSend size={18} />
           </button>
         </div>
       </div>

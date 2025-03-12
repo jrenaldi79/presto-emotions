@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
+/**
+ * AudioRecorder - Audio Capture and Processing
+ * 
+ * @description Handles audio recording and processing from microphone and system audio sources.
+ * Provides volume metering, audio encoding, and streaming capabilities for the Gemini API.
+ * 
+ * @functionality
+ * - Captures audio from microphone input
+ * - Processes audio using Web Audio API worklets
+ * - Provides volume metering for audio visualization
+ * - Encodes audio data in base64 format for transmission
+ * - Supports combined recording of microphone and system audio
+ * - Offers audio balance controls for system and microphone audio
+ * 
+ * @dataFlow Processes audio data and emits it for transmission to the Gemini API
+ * @performance Uses efficient audio worklets for processing
+ * @cleanup Properly releases audio resources when stopped
+ */
+
 import { audioContext } from "./utils";
 import AudioRecordingWorklet from "./worklets/audio-processing";
 import VolMeterWorket from "./worklets/vol-meter";

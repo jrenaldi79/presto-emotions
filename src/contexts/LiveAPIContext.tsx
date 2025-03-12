@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+/**
+ * LiveAPIContext - Gemini Live API Connection Management
+ * 
+ * @description React context that provides access to the Gemini Live API client throughout the application.
+ * Manages the connection state, configuration, and provides methods for connecting/disconnecting.
+ * 
+ * @functionality
+ * - Creates and provides a LiveAPI client instance to all child components
+ * - Manages connection state (connected, reconnecting) and configuration
+ * - Exposes methods for connecting to and disconnecting from the Gemini API
+ * - Handles automatic reconnection when the connection is interrupted with errors
+ * 
+ * @dataFlow Central hub for all components to access the Gemini Live API client
+ * @errorHandling Automatically attempts to reconnect when the connection is interrupted
+ * @stateManagement Maintains connection state and exposes it to the application
+ */
+
 import { createContext, FC, ReactNode, useContext } from "react";
 import { useLiveAPI, UseLiveAPIResults } from "../hooks/use-live-api";
 
