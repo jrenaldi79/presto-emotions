@@ -119,7 +119,6 @@ const ConfirmationModal = ({
 
 function TextResponsePanel() {
   const { client } = useLiveAPIContext();
-  const [responses, setResponses] = useState<string[]>([]);
   const [currentResponse, setCurrentResponse] = useState<string>("");
   const [emotionResponses, setEmotionResponses] = useState<EmotionResponse[]>([]);
   const [isToolSectionExpanded, setIsToolSectionExpanded] = useState<boolean>(false);
@@ -164,7 +163,6 @@ function TextResponsePanel() {
 
     const onTurnComplete = () => {
       if (currentResponse) {
-        setResponses((prev) => [...prev, currentResponse]);
         setCurrentResponse("");
       }
     };
@@ -193,7 +191,7 @@ function TextResponsePanel() {
     }, 2000);
     
     return () => clearInterval(intervalId);
-  }, []);
+  }, [emotionResponses]);
 
   // Scroll to bottom when responses change
   useEffect(() => {

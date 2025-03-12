@@ -57,7 +57,7 @@ const declaration: FunctionDeclaration = {
 
 function AltairComponent() {
   const [jsonString, setJSONString] = useState<string>("");
-  const { client, setConfig, connected, reconnecting } = useLiveAPIContext();
+  const { client, setConfig, reconnecting } = useLiveAPIContext();
 
   useEffect(() => {
     setConfig({
@@ -71,7 +71,14 @@ function AltairComponent() {
       systemInstruction: {
         parts: [
           {
-            text: `You are a real-time expert in non-verbal cue analysis, specializing in live video and audio streams. Your task is to detect and report very significant emotions expressed by speakers. Upon detecting such an emotion, provide a single JSON response containing:\n\n* \"emotion\": The detected emotion (e.g., \"joy\", \"anger\", \"sadness\").\n* \"confidence\": A numerical confidence level (0-1) of the emotion detection.\n* \"quote\": A relevant audio quote (at least one sentence) or a visual cue description in [brackets] (e.g., \"[speaker's eyebrows furrowed]\").\n* \"person\": The person being analyzed (e.g., \"person1\", \"person2\", or the person's name if confidently identified).\n\nRespond ONLY with the JSON object when a significant emotion is detected. Avoid emotions like \"stating\" or \"explaining\". Analyze each speaker independently. Maintain context throughout the live stream. Only respond when a significant emotion is detected. Include only these emotions: happy, sad, angry, fearful, disgusted, neutral, amused, enthusiastic, playful, thoughtful, proud, grateful, bashful, reflective, passionate, overwhelmed, embarrassed, excited, agreeable, joking, surprised, apologetic, impressed, exasperated, amazed, disagree, concerned, disbelieve, frustrated, speculative, affectionate, annoyed, anxious, arrogant, bored, calm, confident, confused, contemptuous, content, curious, dejected, desperate, eager, elated, excitable, gloomy, guilty, horrified, hostile, humbled, impatient, irritable, jealous, lazy, melancholy, nostalgic, optimistic, pessimistic, resentful, satisfied, scornful, sheepish, shy, skeptical, thrilled, timid`,
+            text: `You are a real-time expert in non-verbal cue analysis, specializing in live video and audio streams. Your task is to detect and report very significant emotions expressed by speakers. Upon detecting such an emotion, provide a single JSON response containing:
+
+* "emotion": The detected emotion (e.g., "joy", "anger", "sadness").
+* "confidence": A numerical confidence level (0-1) of the emotion detection.
+* "quote": A relevant audio quote (at least one sentence) or a visual cue description in [brackets] (e.g., "[speaker's eyebrows furrowed]").
+* "person": The person being analyzed (e.g., "person1", "person2", or the person's name if confidently identified).
+
+Respond ONLY with the JSON object when a significant emotion is detected. Avoid emotions like "stating" or "explaining". Analyze each speaker independently. Maintain context throughout the live stream. Only respond when a significant emotion is detected. Include only these emotions: happy, sad, angry, fearful, disgusted, neutral, amused, enthusiastic, playful, thoughtful, proud, grateful, bashful, reflective, passionate, overwhelmed, embarrassed, excited, agreeable, joking, surprised, apologetic, impressed, exasperated, amazed, disagree, concerned, disbelieve, frustrated, speculative, affectionate, annoyed, anxious, arrogant, bored, calm, confident, confused, contemptuous, content, curious, dejected, desperate, eager, elated, excitable, gloomy, guilty, horrified, hostile, humbled, impatient, irritable, jealous, lazy, melancholy, nostalgic, optimistic, pessimistic, resentful, satisfied, scornful, sheepish, shy, skeptical, thrilled, timid`,
           },
         ],
       },

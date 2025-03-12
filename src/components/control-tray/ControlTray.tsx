@@ -41,7 +41,6 @@ import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
 import { useScreenCapture } from "../../hooks/use-screen-capture";
 import { useWebcam } from "../../hooks/use-webcam";
-import { AudioRecorder } from "../../lib/audio-recorder";
 import { CombinedAudioRecorder } from "../../lib/combined-audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import { 
@@ -53,9 +52,7 @@ import {
   IconScreenShareOff, 
   IconX,
   IconWifi,
-  IconWifiOff,
   IconMusic,
-  IconVolume2,
   IconPlay,
   IconPause 
 } from "../icons/LucideIcons";
