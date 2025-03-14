@@ -3,18 +3,19 @@
 ```
 .
 ├── docs/                       # Project documentation
+│   ├── assembly-ai-integration.md # AssemblyAI integration documentation
 │   └── structure.md            # This file - project structure documentation
 ├── public/                     # Static assets served directly by the web server
 │   ├── favicon.ico             # Application favicon
 │   ├── index.html              # HTML entry point
 │   └── robots.txt              # Robots crawling instructions
-├── readme/                     # README assets
-│   └── thumbnail.png           # Thumbnail image for README
 ├── src/                        # Source code
 │   ├── components/             # React components organized by feature
 │   │   ├── altair/             # Emotion detection visualization component
 │   │   │   ├── Altair.scss     # Altair component styles
 │   │   │   └── Altair.tsx      # Altair component implementation
+│   │   ├── assembly-ai-test/   # AssemblyAI testing components
+│   │   │   └── AssemblyAITestMinimal.tsx # Minimal AssemblyAI test component for side panel
 │   │   ├── audio-pulse/        # Audio visualization components
 │   │   │   ├── AudioPulse.tsx  # Audio pulse visualization component
 │   │   │   └── audio-pulse.scss # Audio pulse styles
@@ -31,9 +32,12 @@
 │   │   ├── side-panel/         # Side panel UI components
 │   │   │   ├── SidePanel.tsx   # Side panel implementation
 │   │   │   └── side-panel.scss # Side panel styles
-│   │   └── text-response-panel/ # Emotion visualization dashboard
-│   │       ├── TextResponsePanel.scss # Dashboard styles
-│   │       └── TextResponsePanel.tsx  # Dashboard implementation
+│   │   ├── text-response-panel/ # Emotion visualization dashboard
+│   │   │   ├── TextResponsePanel.scss # Dashboard styles
+│   │   │   └── TextResponsePanel.tsx  # Dashboard implementation
+│   │   └── video-placeholder/  # Video placeholder component
+│   │       ├── VideoPlaceholder.scss # Video placeholder styles
+│   │       └── VideoPlaceholder.tsx  # Video placeholder implementation
 │   ├── contexts/               # React context providers
 │   │   └── LiveAPIContext.tsx  # Gemini Live API context provider
 │   ├── hooks/                  # Custom React hooks
@@ -45,14 +49,17 @@
 │   │   ├── worklets/           # Audio worklet processors
 │   │   │   ├── audio-processing.ts # Audio processing worklet
 │   │   │   └── vol-meter.ts    # Volume meter worklet
+│   │   ├── assembly-ai-client.ts # AssemblyAI API client implementation
 │   │   ├── audio-mixer.ts      # Audio mixing functionality
 │   │   ├── audio-recorder.ts   # Audio recording functionality
 │   │   ├── audio-streamer.ts   # Audio streaming functionality
 │   │   ├── audioworklet-registry.ts # Audio worklet registration
 │   │   ├── combined-audio-recorder.ts # Combined audio recording
+│   │   ├── logger.ts           # Logging utility functions
 │   │   ├── multimodal-live-client.ts # Gemini API client implementation
 │   │   ├── response-store.ts   # Emotion response data store
 │   │   ├── store-logger.ts     # Logging store implementation
+│   │   ├── transcription-store.ts # Transcription data store
 │   │   └── utils.ts            # General utility functions
 │   ├── App.scss                # Main application styles
 │   ├── App.test.tsx            # Application tests
