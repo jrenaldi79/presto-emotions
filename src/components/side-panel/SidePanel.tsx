@@ -21,17 +21,19 @@ import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { useLoggerStore } from "../../lib/store-logger";
 import Logger, { LoggerFilterType } from "../logger/Logger";
 import { IconPanelLeftClose, IconPanelLeftOpen, IconSend } from "../icons/LucideIcons";
+import AssemblyAITestMinimal from "../assembly-ai-test/AssemblyAITestMinimal";
 import "./side-panel.scss";
 
 const filterOptions = [
   { value: "conversations", label: "Conversations" },
   { value: "tools", label: "Tool Use" },
+  { value: "assembly-ai", label: "AssemblyAI" },
   { value: "none", label: "All" },
 ];
 
 export default function SidePanel() {
   const { connected, client } = useLiveAPIContext();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const loggerRef = useRef<HTMLDivElement>(null);
   const loggerLastHeightRef = useRef<number>(-1);
   const { log, logs } = useLoggerStore();
@@ -120,6 +122,12 @@ export default function SidePanel() {
             : `⏸️${open ? " Paused" : ""}`}
         </div>
       </section>
+      
+      {open && (
+        <section className="assembly-ai-test-section">
+          <AssemblyAITestMinimal className="side-panel-assembly-test" />
+        </section>
+      )}
       <div className="side-panel-container" ref={loggerRef}>
         <Logger
           filter={(selectedOption?.value as LoggerFilterType) || "none"}

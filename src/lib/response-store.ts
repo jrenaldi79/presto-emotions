@@ -24,6 +24,8 @@ export interface EmotionResponse {
   confidence: number;
   quote: string;
   person: string;
+  duration?: number; // Duration of the emotion in seconds
+  notes?: string; // Additional observations about mixed emotions or context
   id?: string; // Unique identifier for each response
 }
 
@@ -77,6 +79,19 @@ export const clearResponses = (): void => {
     localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
     console.error('Error clearing responses:', error);
+  }
+};
+
+// Delete a specific response by ID
+export const deleteResponse = (id: string): void => {
+  try {
+    const responses = getStoredResponses();
+    const filteredResponses = responses.filter(response => response.id !== id);
+    
+    // Update localStorage with the filtered responses
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredResponses));
+  } catch (error) {
+    console.error('Error deleting response:', error);
   }
 };
 
@@ -170,7 +185,9 @@ export const extractEmotionResponse = (text: string): EmotionResponse | EmotionR
         timestamp: item.timestamp || new Date().toLocaleTimeString(),
         confidence: item.confidence,
         quote: item.quote || '',
-        person: item.person
+        person: item.person,
+        duration: item.duration,
+        notes: item.notes
       }));
     
     if (validResponses.length > 0) {
@@ -206,7 +223,9 @@ export const extractEmotionResponse = (text: string): EmotionResponse | EmotionR
       timestamp: jsonData.timestamp || new Date().toLocaleTimeString(),
       confidence: jsonData.confidence,
       quote: jsonData.quote || '',
-      person: jsonData.person
+      person: jsonData.person,
+      duration: jsonData.duration,
+      notes: jsonData.notes
     };
     
     if (DEBUG_JSON_PARSING) {

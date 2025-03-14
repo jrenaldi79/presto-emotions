@@ -207,7 +207,7 @@ const CustomPlainTextLog = (msg: string) => () => (
   <PlainTextMessage message={msg} />
 );
 
-export type LoggerFilterType = "conversations" | "tools" | "none";
+export type LoggerFilterType = "conversations" | "tools" | "assembly-ai" | "none";
 
 export type LoggerProps = {
   filter: LoggerFilterType;
@@ -220,11 +220,21 @@ const filters: Record<LoggerFilterType, (log: StreamingLog) => boolean> = {
     isToolCallCancellationMessage(log.message),
   conversations: (log: StreamingLog) =>
     isClientContentMessage(log.message) || isServerContentMessage(log.message),
+  "assembly-ai": (log: StreamingLog) =>
+    log.type === 'assembly-ai' || log.type === 'assembly-ai-error' || log.type === 'assembly-ai-transcript',
   none: () => true,
 };
 
 const component = (log: StreamingLog) => {
   if (typeof log.message === "string") {
+    // Handle AssemblyAI specific log types with custom styling
+    if (log.type === 'assembly-ai') {
+      return CustomPlainTextLog(`🎙️ ${log.message}`);
+    } else if (log.type === 'assembly-ai-error') {
+      return CustomPlainTextLog(`🚨 ${log.message}`);
+    } else if (log.type === 'assembly-ai-transcript') {
+      return CustomPlainTextLog(`📝 ${log.message}`);
+    }
     return PlainTextMessage;
   }
   if (isClientContentMessage(log.message)) {

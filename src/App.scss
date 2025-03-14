@@ -26,7 +26,7 @@
   scrollbar-color: var(--gray-600) var(--gray-900);
   scrollbar-width: thin;
 
-  --font-family: "Space Mono", monospace;
+  --font-family: "Source Sans Pro", sans-serif;
 
   /* */
   --Neutral-00: #000;
@@ -53,7 +53,7 @@
 }
 
 body {
-  font-family: "Space Mono", monospace;
+  font-family: "Source Sans Pro", sans-serif;
   background: var(--Neutral-30);
 }
 
@@ -68,25 +68,25 @@ body {
 }
 
 .space-mono-regular {
-  font-family: "Space Mono", monospace;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
 
 .space-mono-bold {
-  font-family: "Space Mono", monospace;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 700;
   font-style: normal;
 }
 
 .space-mono-regular-italic {
-  font-family: "Space Mono", monospace;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 400;
   font-style: italic;
 }
 
 .space-mono-bold-italic {
-  font-family: "Space Mono", monospace;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 700;
   font-style: italic;
 }
@@ -163,6 +163,8 @@ body {
     height: 50%;
     overflow-y: auto;
   }
+  
+  /* Test panel container removed - now integrated into side panel */
 }
 
 /* video container and player */
@@ -171,7 +173,7 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  width: calc(100% - 400px); /* Account for the right panel width */
+  width: calc(100% - 500px); /* Account for the right panel width (updated to 500px) */
   display: flex;
   justify-content: center;
   align-items: center;

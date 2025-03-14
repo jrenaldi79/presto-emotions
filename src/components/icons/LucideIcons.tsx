@@ -29,6 +29,8 @@ import {
   Camera,
   CameraOff,
   ScreenShare,
+  ChartBar,
+  ChartPie,
   ScreenShareOff,
   Send,
   Music,
@@ -224,5 +226,7 @@ export const IconCloudRain = CloudRain;
 export const IconCloudSnow = CloudSnow;
 export const IconCloudLightning = CloudLightning;
 export const IconCloudFog = CloudFog;
+export const IconBarChart = ChartBar;
+export const IconChartPie = ChartPie;
 
 export default LucideIconsExample;
